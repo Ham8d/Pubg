@@ -9,7 +9,7 @@ TurathAlert_FILES := Tweak.x
 TurathAlert_CFLAGS := -fobjc-arc
 TurathAlert_FRAMEWORKS := UIKit
 
-# فعّل هذا السطر إذا كنت تريد حزمة Rootless للأجهزة الحديثة
+# بناء حزمة Rootless للأجهزة الحديثة.
 THEOS_PACKAGE_SCHEME := rootless
 
 include $(THEOS_MAKE_PATH)/tweak.mk
