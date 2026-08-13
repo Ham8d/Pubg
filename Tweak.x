@@ -19,18 +19,18 @@ static UIWindow *TAGetActiveWindow(void) {
     UIApplication *application = UIApplication.sharedApplication;
 
     if (@available(iOS 13.0, *)) {
-        // البحث أولًا في المشاهد النشطة حتى لا يظهر التنبيه
-        // فوق تطبيق موجود في الخلفية.
+        // ابحث أولًا في المشاهد النشطة حتى لا نحاول عرض التنبيه فوق تطبيق
+        // موجود في الخلفية أو فوق مشهد غير مستخدم.
         for (UIScene *scene in application.connectedScenes) {
             if (![scene isKindOfClass:[UIWindowScene class]]) {
                 continue;
             }
 
+            UIWindowScene *windowScene = (UIWindowScene *)scene;
+
             if (scene.activationState != UISceneActivationStateForegroundActive) {
                 continue;
             }
-
-            UIWindowScene *windowScene = (UIWindowScene *)scene;
 
             for (UIWindow *window in windowScene.windows) {
                 if (window.isKeyWindow && TAIsUsableWindow(window)) {
@@ -45,8 +45,8 @@ static UIWindow *TAGetActiveWindow(void) {
             }
         }
 
-        // إذا كان المشهد في الواجهة لكنه غير نشط مؤقتًا،
-        // نستخدمه كخيار احتياطي، وستتم إعادة المحاولة لاحقًا.
+        // إذا لم توجد نافذة نشطة لحظة المحاولة، استخدم مشهدًا في الواجهة
+        // لكنه غير نشط مؤقتًا، وسيعيد المجدول المحاولة لاحقًا.
         for (UIScene *scene in application.connectedScenes) {
             if (![scene isKindOfClass:[UIWindowScene class]] ||
                 scene.activationState != UISceneActivationStateForegroundInactive) {
@@ -68,7 +68,6 @@ static UIWindow *TAGetActiveWindow(void) {
             }
         }
 
-        // لا تستخدم نافذة من مشهد في الخلفية.
         return nil;
     }
 
