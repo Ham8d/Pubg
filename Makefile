@@ -1,12 +1,15 @@
 TARGET := iphone:clang:latest:14.0
-ARCHS = arm64 arm64e
+ARCHS := arm64 arm64e
 
 include $(THEOS)/makefiles/common.mk
 
-TWEAK_NAME = TurathAlert
+TWEAK_NAME := TurathAlert
 
-TurathAlert_FILES = Tweak.x
-TurathAlert_CFLAGS = -fobjc-arc
-TurathAlert_FRAMEWORKS = UIKit
+TurathAlert_FILES := Tweak.x
+TurathAlert_CFLAGS := -fobjc-arc
+TurathAlert_FRAMEWORKS := UIKit
+
+# فعّل هذا السطر إذا كنت تريد حزمة Rootless للأجهزة الحديثة
+THEOS_PACKAGE_SCHEME := rootless
 
 include $(THEOS_MAKE_PATH)/tweak.mk
