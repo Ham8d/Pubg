@@ -4,7 +4,7 @@
 #define ALERT_MESSAGE @"للحصول على كود التفعيل الرجاء الانضمام إلى قناتنا"
 #define BUTTON_ACTION_TITLE @"اضغط هنا"
 #define BUTTON_CLOSE_TITLE @"إغلاق"
-#define TARGET_URL_STRING @"https://t.me/turath_st/743"
+#define TARGET_URL_STRING @"https://t.me/turath_st/744"
 
 static BOOL gAlertAlreadyShown = NO;
 
