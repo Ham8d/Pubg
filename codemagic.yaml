@@ -3,20 +3,49 @@ workflows:
     name: Build iOS Dylib
     max_build_duration: 30
     instance_type: mac_mini_m1
+
     environment:
       vars:
         THEOS: $CM_BUILD_DIR/theos
+
     scripts:
-      - name: Install Dependencies & Theos
+      - name: Install Theos
         script: |
-          git clone --recursive https://github.com/theos/theos.git $THEOS
-          
+          set -euxo pipefail
+
+          rm -rf "$THEOS"
+
+          git clone \
+            --depth=1 \
+            --recursive \
+            https://github.com/theos/theos.git \
+            "$THEOS"
+
+      - name: Normalize source filename
+        script: |
+          set -euxo pipefail
+
+          if [ ! -f "Tweak.x" ]; then
+            SOURCE_FILE="$(find . -maxdepth 1 -type f -name '*Tweak.x*' -print -quit)"
+
+            if [ -z "$SOURCE_FILE" ]; then
+              echo "Tweak.x was not found"
+              find . -maxdepth 1 -print
+              exit 1
+            fi
+
+            mv "$SOURCE_FILE" "Tweak.x"
+          fi
+
+          test -f "Tweak.x"
+
       - name: Build Dylib
         script: |
+          set -euxo pipefail
+
           make clean
-          make FINALPACKAGE=1
-          
+          make FINALPACKAGE=1 -j"$(sysctl -n hw.ncpu)"
+
     artifacts:
-      - .theos/obj/debug/*.dylib
-      - .theos/obj/*.dylib
-      - packages/*.deb
+      - ".theos/obj/**/*.dylib"
+      - "packages/*.deb"
