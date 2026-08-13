@@ -21,6 +21,24 @@ workflows:
             https://github.com/theos/theos.git \
             "$THEOS"
 
+      - name: Install ldid
+        script: |
+          set -euxo pipefail
+
+          if ! command -v brew >/dev/null 2>&1; then
+            echo "Homebrew is required to install ldid"
+            exit 1
+          fi
+
+          BREW_PREFIX="$(brew --prefix)"
+          export PATH="$BREW_PREFIX/bin:$PATH"
+
+          if ! command -v ldid >/dev/null 2>&1; then
+            brew install ldid
+          fi
+
+          command -v ldid
+
       - name: Normalize source filename
         script: |
           set -euxo pipefail
@@ -42,6 +60,11 @@ workflows:
       - name: Build Dylib
         script: |
           set -euxo pipefail
+
+          BREW_PREFIX="$(brew --prefix)"
+          export PATH="$BREW_PREFIX/bin:$PATH"
+
+          command -v ldid
 
           make clean
           make FINALPACKAGE=1 -j"$(sysctl -n hw.ncpu)"
